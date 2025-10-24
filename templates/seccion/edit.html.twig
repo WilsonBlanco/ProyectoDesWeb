@@ -1,0 +1,13 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Edit Seccion{% endblock %}
+
+{% block body %}
+    <h1>Edit Seccion</h1>
+
+    {{ include('seccion/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_seccion_index') }}">back to list</a>
+
+    {{ include('seccion/_delete_form.html.twig') }}
+{% endblock %}

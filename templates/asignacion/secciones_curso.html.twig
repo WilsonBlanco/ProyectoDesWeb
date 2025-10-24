@@ -1,0 +1,90 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Habilitar Secciones para Cursos - Sistema Escolar{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Habilitar Secciones para Cursos</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ path('app_asignacion_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>
+
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Habilitar Nueva Sección</h5>
+            </div>
+            <div class="card-body">
+                {{ form_start(form) }}
+                <div class="mb-3">
+                    {{ form_label(form.cursoCarreraSemestre) }}
+                    {{ form_widget(form.cursoCarreraSemestre) }}
+                    <small class="form-text text-muted">Seleccione un curso específico de carrera y semestre</small>
+                </div>
+                <div class="mb-3">
+                    {{ form_label(form.seccion) }}
+                    {{ form_widget(form.seccion) }}
+                </div>
+                <button type="submit" class="btn btn-primary">Habilitar Sección</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Secciones Habilitadas</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>Curso</th>
+                                <th>Carrera</th>
+                                <th>Semestre</th>
+                                <th>Sección</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for seccion in seccionesHabilitadas %}
+                                <tr>
+                                    <td>{{ seccion.cursoCarreraSemestre.curso.nombre }}</td>
+                                    <td>{{ seccion.cursoCarreraSemestre.carrera.nombre }}</td>
+                                    <td>{{ seccion.cursoCarreraSemestre.semestre.nombre }}</td>
+                                    <td>{{ seccion.seccion.nombre }}</td>
+                                    <td>
+                                        <form method="post" action="{{ path('app_curso_seccion_delete', {'id': seccion.id}) }}" style="display: inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ seccion.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro?')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No hay secciones habilitadas</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

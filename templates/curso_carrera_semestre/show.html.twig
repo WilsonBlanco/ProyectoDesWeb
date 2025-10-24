@@ -1,0 +1,46 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Detalle de Asignación - Sistema Escolar{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Detalle de Asignación</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ path('app_curso_carrera_semestre_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>{{ curso_carrera_semestre.id }}</td>
+                </tr>
+                <tr>
+                    <th>Carrera</th>
+                    <td>{{ curso_carrera_semestre.carrera.nombre }}</td>
+                </tr>
+                <tr>
+                    <th>Semestre</th>
+                    <td>{{ curso_carrera_semestre.semestre.nombre }}</td>
+                </tr>
+                <tr>
+                    <th>Curso</th>
+                    <td>{{ curso_carrera_semestre.curso.nombre }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{{ path('app_curso_carrera_semestre_edit', {'id': curso_carrera_semestre.id}) }}" class="btn btn-warning">
+        <i class="bi bi-pencil"></i> Editar
+    </a>
+    {{ include('curso_carrera_semestre/_delete_form.html.twig') }}
+</div>
+{% endblock %}

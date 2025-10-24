@@ -1,0 +1,43 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Asignaciones - Sistema Escolar{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Módulo de Asignaciones</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-link"></i> Asignar Cursos a Carrera y Semestre
+                </h5>
+                <p class="card-text">
+                    Asigne cursos específicos a una combinación de carrera y semestre.
+                </p>
+                <a href="{{ path('app_asignacion_cursos_carrera_semestre') }}" class="btn btn-primary">
+                    Gestionar Asignaciones
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-collection"></i> Habilitar Secciones para Cursos
+                </h5>
+                <p class="card-text">
+                    Habilite secciones específicas para cada curso en su contexto de carrera y semestre.
+                </p>
+                <a href="{{ path('app_asignacion_secciones_curso') }}" class="btn btn-primary">
+                    Gestionar Secciones
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

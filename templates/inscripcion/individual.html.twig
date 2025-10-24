@@ -1,0 +1,91 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Inscripción Individual - Sistema Escolar{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Inscripción Individual</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ path('app_inscripcion_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>
+
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Nueva Inscripción</h5>
+            </div>
+            <div class="card-body">
+                {{ form_start(form) }}
+                <div class="mb-3">
+                    {{ form_label(form.alumno) }}
+                    {{ form_widget(form.alumno) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(form.cursoSeccion) }}
+                    {{ form_widget(form.cursoSeccion) }}
+                </div>
+                <button type="submit" class="btn btn-primary">Inscribir Alumno</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Inscripciones Existentes</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>Alumno</th>
+                                <th>Curso</th>
+                                <th>Carrera</th>
+                                <th>Semestre</th>
+                                <th>Sección</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for inscripcion in inscripciones %}
+                                <tr>
+                                    <td>{{ inscripcion.alumno.nombreCompleto }}</td>
+                                    <td>{{ inscripcion.cursoSeccion.cursoCarreraSemestre.curso.nombre }}</td>
+                                    <td>{{ inscripcion.cursoSeccion.cursoCarreraSemestre.carrera.nombre }}</td>
+                                    <td>{{ inscripcion.cursoSeccion.cursoCarreraSemestre.semestre.nombre }}</td>
+                                    <td>{{ inscripcion.cursoSeccion.seccion.nombre }}</td>
+                                    <td>
+                                        <form method="post" action="{{ path('app_inscripcion_delete', {'id': inscripcion.id}) }}" style="display: inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ inscripcion.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de eliminar esta inscripción?')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center">No hay inscripciones</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

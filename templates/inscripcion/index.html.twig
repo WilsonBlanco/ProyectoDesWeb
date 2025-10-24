@@ -1,0 +1,43 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Inscripción de Alumnos - Sistema Escolar{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Módulo de Inscripción de Alumnos</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-person-plus"></i> Inscripción Individual
+                </h5>
+                <p class="card-text">
+                    Inscriba a un alumno específico en un curso y sección.
+                </p>
+                <a href="{{ path('app_inscripcion_individual') }}" class="btn btn-primary">
+                    Inscripción Individual
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-people-fill"></i> Inscripción Múltiple
+                </h5>
+                <p class="card-text">
+                    Inscriba a múltiples alumnos de una carrera en cursos de un semestre.
+                </p>
+                <a href="{{ path('app_inscripcion_multiple') }}" class="btn btn-primary">
+                    Inscripción Múltiple
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

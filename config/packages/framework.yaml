@@ -7,6 +7,16 @@ framework:
 
     #esi: true
     #fragments: true
+    
+    http_client:
+        scoped_clients:
+            # ejemplo de clientes http con ámbito
+    serializer:
+        enabled: true
+    form:
+        enabled: true
+    assets:
+        enabled: true
 
 when@test:
     framework:

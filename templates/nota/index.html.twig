@@ -1,0 +1,43 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Registro de Notas - Sistema Escolar{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Módulo de Registro de Notas</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-journal-check"></i> Registro de Notas
+                </h5>
+                <p class="card-text">
+                    Ingrese las calificaciones de los alumnos por carrera, curso y sección.
+                </p>
+                <a href="{{ path('app_nota_registro') }}" class="btn btn-primary">
+                    Registrar Notas
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-clock-history"></i> Historial de Notas
+                </h5>
+                <p class="card-text">
+                    Consulte el historial completo de notas de un alumno específico.
+                </p>
+                <a href="{{ path('app_nota_historial') }}" class="btn btn-primary">
+                    Ver Historial
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

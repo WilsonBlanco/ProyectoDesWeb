@@ -1,0 +1,11 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}New Seccion{% endblock %}
+
+{% block body %}
+    <h1>Create new Seccion</h1>
+
+    {{ include('seccion/_form.html.twig') }}
+
+    <a href="{{ path('app_seccion_index') }}">back to list</a>
+{% endblock %}

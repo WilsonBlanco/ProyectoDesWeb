@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Inscripcion{% endblock %}
+
+{% block body %}
+    <h1>Edit Inscripcion</h1>
+
+    {{ include('inscripcion/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_inscripcion_index') }}">back to list</a>
+
+    {{ include('inscripcion/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Habilitar Nueva Sección - Sistema Escolar{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Habilitar Nueva Sección para Curso</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ path('app_curso_seccion_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {{ form_start(form) }}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form_label(form.cursoCarreraSemestre) }}
+                    {{ form_widget(form.cursoCarreraSemestre) }}
+                    <small class="form-text text-muted">Seleccione un curso específico de carrera y semestre</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    {{ form_label(form.seccion) }}
+                    {{ form_widget(form.seccion) }}
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Habilitar Sección</button>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

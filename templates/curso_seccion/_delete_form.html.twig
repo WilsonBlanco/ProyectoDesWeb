@@ -1,0 +1,6 @@
+<form method="post" action="{{ path('app_curso_seccion_delete', {'id': curso_seccion.id}) }}" onsubmit="return confirm('¿Está seguro que desea eliminar esta sección habilitada?');" style="display: inline;">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ curso_seccion.id) }}">
+    <button type="submit" class="btn btn-sm btn-danger">
+        <i class="bi bi-trash"></i>
+    </button>
+</form>

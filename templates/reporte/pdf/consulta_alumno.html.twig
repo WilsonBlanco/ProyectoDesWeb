@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Historial Académico - {{ alumno.nombreCompleto }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #333;
+            font-size: 18px;
+        }
+        .student-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        .student-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .student-info td {
+            padding: 8px;
+            vertical-align: top;
+        }
+        .photo {
+            text-align: center;
+            width: 120px;
+        }
+        .photo-placeholder {
+            width: 100px;
+            height: 100px;
+            background-color: #ddd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            color: #666;
+            font-size: 14px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+        }
+        .table td {
+            border: 1px solid #dee2e6;
+            padding: 10px;
+        }
+        .table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        .badge-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .badge-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .badge-secondary {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .stats {
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+        .stat-item {
+            padding: 10px;
+            border-radius: 5px;
+            min-width: 120px;
+        }
+        .stat-total { background-color: #e2e3e5; color: #383d41; }
+        .stat-aprobados { background-color: #d4edda; color: #155724; }
+        .stat-reprobados { background-color: #f8d7da; color: #721c24; }
+        .stat-porcentaje { background-color: #cce7ff; color: #004085; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Historial Académico</h1>
+        <div style="color: #666; font-size: 14px;">Sistema Escolar</div>
+    </div>
+
+    <div class="student-info">
+        <table>
+            <tr>
+                <td class="photo">
+                    {% if foto_base64 %}
+                        <img src="{{ foto_base64 }}" 
+                            alt="Foto de {{ alumno.nombreCompleto }}" 
+                            style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;">
+                    {% else %}
+                        <div class="photo-placeholder">
+                            Sin Foto
+                        </div>
+                    {% endif %}
+                </td>
+                <td>
+                    <h2 style="margin: 0 0 10px 0; color: #333;">{{ alumno.nombreCompleto }}</h2>
+                    <table>
+                        <tr>
+                            <td><strong>Carrera:</strong> {{ alumno.carrera.nombre }}</td>
+                            <td><strong>Fecha Nacimiento:</strong> {{ alumno.fechaNacimiento|date('d/m/Y') }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Edad:</strong> 
+                                {% if alumno.fechaNacimiento %}
+                                    {{ date().diff(date(alumno.fechaNacimiento)).y }} años
+                                {% endif %}
+                            </td>
+                            <td><strong>ID Alumno:</strong> {{ alumno.id }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    {% if notas|length > 0 %}
+    {% set totalCursos = notas|length %}
+    {% set cursosAprobados = notas|filter(n => n.aprobado)|length %}
+    {% set cursosReprobados = notas|filter(n => not n.aprobado)|length %}
+    {% set porcentajeAprobacion = totalCursos > 0 ? ((cursosAprobados / totalCursos) * 100)|number_format(1) : 0 %}
+
+    <div class="stats">
+        <div class="stat-item stat-total">
+            <div style="font-size: 18px; font-weight: bold;">{{ totalCursos }}</div>
+            <div>Total Cursos</div>
+        </div>
+        <div class="stat-item stat-aprobados">
+            <div style="font-size: 18px; font-weight: bold;">{{ cursosAprobados }}</div>
+            <div>Cursos Aprobados</div>
+        </div>
+        <div class="stat-item stat-reprobados">
+            <div style="font-size: 18px; font-weight: bold;">{{ cursosReprobados }}</div>
+            <div>Cursos Reprobados</div>
+        </div>
+        <div class="stat-item stat-porcentaje">
+            <div style="font-size: 18px; font-weight: bold;">{{ porcentajeAprobacion }}%</div>
+            <div>Promedio Aprobación</div>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th width="20%">Semestre</th>
+                <th width="25%">Curso</th>
+                <th width="10%">Sección</th>
+                <th width="10%">Nota</th>
+                <th width="15%">Estado</th>
+                <th width="20%">Fecha Registro</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for nota in notas %}
+            <tr>
+                <td>
+                    <strong>{{ nota.semestre.nombre }}</strong>
+                    <br>
+                    <small style="color: #666;">
+                        {{ nota.semestre.fechaInicio|date('d/m/Y') }} - 
+                        {{ nota.semestre.fechaFin|date('d/m/Y') }}
+                    </small>
+                </td>
+                <td>{{ nota.curso.nombre }}</td>
+                <td class="text-center">{{ nota.seccion.nombre }}</td>
+                <td class="text-center">
+                    <span class="badge {% if nota.aprobado %}badge-success{% else %}badge-danger{% endif %}">
+                        {{ nota.calificacion }}
+                    </span>
+                </td>
+                <td class="text-center">
+                    {% if nota.aprobado %}
+                        <span class="badge badge-success">Aprobado</span>
+                    {% else %}
+                        <span class="badge badge-danger">Reprobado</span>
+                    {% endif %}
+                </td>
+                <td>{{ nota.fechaRegistro|date('d/m/Y H:i') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <p>Generado el {{ fecha|date('d/m/Y \\a \\l\\a\\s H:i') }} | Sistema Escolar</p>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 40px; color: #666;">
+        <h3>No se encontró historial de notas</h3>
+        <p>El alumno no tiene notas registradas en el sistema.</p>
+    </div>
+    {% endif %}
+
+    <script type="text/php">
+        if (isset($pdf)) {
+            $text = "Página {PAGE_NUM} de {PAGE_COUNT}";
+            $size = 10;
+            $font = $fontMetrics->getFont("Arial");
+            $width = $fontMetrics->get_text_width($text, $font, $size) / 2;
+            $x = ($pdf->get_width() - $width) / 2;
+            $y = $pdf->get_height() - 35;
+            $pdf->page_text($x, $y, $text, $font, $size);
+        }
+    </script>
+</body>
+</html>

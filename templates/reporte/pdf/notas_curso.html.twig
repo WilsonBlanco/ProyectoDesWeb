@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Notas por Curso</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            line-height: 1.3;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 8px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #333;
+            font-size: 16px;
+        }
+        .header .subtitle {
+            margin: 3px 0;
+            color: #666;
+            font-size: 12px;
+        }
+        .info {
+            margin-bottom: 10px;
+        }
+        .info table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9px;
+        }
+        .info td {
+            padding: 3px;
+            vertical-align: top;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+            font-size: 9px;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 6px;
+            text-align: left;
+            font-weight: bold;
+        }
+        .table td {
+            border: 1px solid #dee2e6;
+            padding: 6px;
+        }
+        .table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .footer {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 8px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 8px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 8px;
+            font-weight: bold;
+        }
+        .badge-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .badge-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .stats {
+            margin: 10px 0;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            font-size: 9px;
+        }
+        .stats table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .stats td {
+            padding: 4px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Sistema Escolar - Reporte de Notas</h1>
+        <div class="subtitle">Notas por Curso</div>
+    </div>
+
+    <div class="info">
+        <table>
+            <tr>
+                <td><strong>Curso:</strong> {{ curso.nombre }}</td>
+                <td><strong>Carrera:</strong> {{ carrera.nombre }}</td>
+            </tr>
+            <tr>
+                <td><strong>Sección:</strong> {{ seccion.nombre }}</td>
+                <td><strong>Semestre:</strong> {{ semestre.nombre }}</td>
+            </tr>
+            <tr>
+                <td><strong>Fecha de Generación:</strong> {{ fecha|date('d/m/Y H:i') }}</td>
+                <td><strong>Total de Alumnos:</strong> {{ notas|length }}</td>
+            </tr>
+        </table>
+    </div>
+
+    {% if notas|length > 0 %}
+    {% set aprobados = notas|filter(n => n.aprobado)|length %}
+    {% set reprobados = notas|filter(n => not n.aprobado)|length %}
+    {% set porcentaje_aprobacion = notas|length > 0 ? ((aprobados / notas|length) * 100)|number_format(1) : 0 %}
+
+    <div class="stats">
+        <table>
+            <tr>
+                <td><strong>Total Alumnos:</strong> {{ notas|length }}</td>
+                <td><strong>Aprobados:</strong> {{ aprobados }}</td>
+                <td><strong>Reprobados:</strong> {{ reprobados }}</td>
+                <td><strong>% Aprobación:</strong> {{ porcentaje_aprobacion }}%</td>
+            </tr>
+        </table>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th width="5%">#</th>
+                <th width="30%">Alumno</th>
+                <th width="15%">Nota</th>
+                <th width="15%">Estado</th>
+                <th width="20%">Fecha Registro</th>
+                <th width="15%">Carrera</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for nota in notas %}
+            <tr>
+                <td class="text-center">{{ loop.index }}</td>
+                <td>{{ nota.alumno.apellidos }}, {{ nota.alumno.nombres }}</td>
+                <td class="text-center">
+                    <span class="badge {% if nota.aprobado %}badge-success{% else %}badge-danger{% endif %}">
+                        {{ nota.calificacion }}
+                    </span>
+                </td>
+                <td class="text-center">
+                    {% if nota.aprobado %}
+                        <span class="badge badge-success">Aprobado</span>
+                    {% else %}
+                        <span class="badge badge-danger">Reprobado</span>
+                    {% endif %}
+                </td>
+                <td>{{ nota.fechaRegistro|date('d/m/Y H:i') }}</td>
+                <td>{{ nota.alumno.carrera.nombre }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <p>Generado el {{ fecha|date('d/m/Y \\a \\l\\a\\s H:i') }} | Sistema Escolar</p>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 30px; color: #666;">
+        <h3>No se encontraron notas para los criterios seleccionados</h3>
+        <p>Curso: {{ curso.nombre }} | Sección: {{ seccion.nombre }} | Semestre: {{ semestre.nombre }}</p>
+    </div>
+    {% endif %}
+
+    <script type="text/php">
+        if (isset($pdf)) {
+            $text = "Página {PAGE_NUM} de {PAGE_COUNT}";
+            $size = 8;
+            $font = $fontMetrics->getFont("Arial");
+            $width = $fontMetrics->get_text_width($text, $font, $size) / 2;
+            $x = ($pdf->get_width() - $width) / 2;
+            $y = $pdf->get_height() - 25;
+            $pdf->page_text($x, $y, $text, $font, $size);
+        }
+    </script>
+</body>
+</html>

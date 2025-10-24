@@ -1,0 +1,196 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Registro de Notas - Sistema Escolar{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Registro de Notas</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ path('app_nota_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>
+
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+
+{% for message in app.flashes('warning') %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Seleccionar Curso y Sección</h5>
+    </div>
+    <div class="card-body">
+        {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}
+        <div class="row">
+            <div class="col-md-3">
+                <div class="mb-3">
+                    {{ form_label(form.carrera) }}
+                    {{ form_widget(form.carrera) }}
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    {{ form_label(form.semestre) }}
+                    {{ form_widget(form.semestre) }}
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    {{ form_label(form.curso) }}
+                    {{ form_widget(form.curso) }}
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="mb-3">
+                    {{ form_label(form.seccion) }}
+                    {{ form_widget(form.seccion) }}
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" name="cargar_alumnos" value="1">Cargar Alumnos</button>
+        {{ form_end(form) }}
+    </div>
+</div>
+
+{% if mostrarFormularioNotas and datosSeleccionados %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            Ingresar Notas - {{ datosSeleccionados.carrera.nombre }} - {{ datosSeleccionados.curso.nombre }} - Sección {{ datosSeleccionados.seccion.nombre }} - {{ datosSeleccionados.semestre.nombre }}
+        </h5>
+    </div>
+    <div class="card-body">
+        <form action="{{ path('app_nota_registro') }}" method="post" id="form-notas">
+            <input type="hidden" name="carrera_id" value="{{ datosSeleccionados.carrera.id }}">
+            <input type="hidden" name="curso_id" value="{{ datosSeleccionados.curso.id }}">
+            <input type="hidden" name="seccion_id" value="{{ datosSeleccionados.seccion.id }}">
+            <input type="hidden" name="semestre_id" value="{{ datosSeleccionados.semestre.id }}">
+
+            <div class="table-responsive">
+                <table class="table table-striped   -hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Alumno</th>
+                            <th>Nota Actual</th>
+                            <th>Nueva Nota</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for alumnoData in alumnosConNotas %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>
+                                    <strong>{{ alumnoData.alumno.apellidos }}, {{ alumnoData.alumno.nombres }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ alumnoData.alumno.carrera.nombre }}</small>
+                                </td>
+                                <td>
+                                    {% if alumnoData.nota %}
+                                        <span class="badge {% if alumnoData.nota.aprobado %}bg-success{% else %}bg-danger{% endif %} fs-6">
+                                            {{ alumnoData.nota.calificacion }}
+                                        </span>
+                                        <br>
+                                        <small class="text-muted">{{ alumnoData.nota.fechaRegistro|date('d/m/Y') }}</small>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Sin nota</span>
+                                    {% endif %}
+                                </td>
+                                <td style="width: 150px;">
+                                    <input type="number" 
+                                           name="notas[{{ alumnoData.alumno.id }}]" 
+                                           class="form-control nota-input" 
+                                           min="0" 
+                                           max="100" 
+                                           step="0.01"
+                                           placeholder="0-100"
+                                           value="{{ alumnoData.nota ? alumnoData.nota.calificacion : '' }}"
+                                           onchange="validarNota(this)">
+                                </td>
+                                <td>
+                                    {% if alumnoData.nota %}
+                                        {% if alumnoData.nota.aprobado %}
+                                            <span class="badge bg-success">Aprobado</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Reprobado</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="badge bg-warning">Pendiente</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-3">
+                <button type="submit" class="btn btn-success" name="guardar_notas" value="1">
+                    <i class="bi bi-save"></i> Guardar Todas las Notas
+                </button>
+                <small class="text-muted ms-2">Nota mínima para aprobar: 61</small>
+            </div>
+        </form>
+    </div>
+</div>
+{% elseif mostrarFormularioNotas %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> No se encontraron alumnos inscritos para la combinación seleccionada.
+</div>
+{% endif %}
+
+<script>
+function validarNota(input) {
+    const value = parseFloat(input.value);
+    if (isNaN(value) || value < 0 || value > 100) {
+        input.classList.add('is-invalid');
+    } else {
+        input.classList.remove('is-invalid');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const formNotas = document.getElementById('form-notas');
+    if (formNotas) {
+        formNotas.addEventListener('submit', function(e) {
+            const notaInputs = document.querySelectorAll('.nota-input');
+            const tieneNotas = Array.from(notaInputs).some(input => input.value !== '');
+            
+            if (!tieneNotas) {
+                e.preventDefault();
+                alert('Por favor ingrese al menos una nota antes de guardar.');
+                return false;
+            }
+            
+            // Validar que todas las notas estén en el rango correcto
+            let notasInvalidas = false;
+            notaInputs.forEach(input => {
+                const value = parseFloat(input.value);
+                if (input.value !== '' && (isNaN(value) || value < 0 || value > 100)) {
+                    input.classList.add('is-invalid');
+                    notasInvalidas = true;
+                }
+            });
+            
+            if (notasInvalidas) {
+                e.preventDefault();
+                alert('Por favor corrija las notas que están fuera del rango permitido (0-100).');
+                return false;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

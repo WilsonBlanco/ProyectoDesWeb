@@ -1,0 +1,204 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Consulta de Alumno - Sistema Escolar{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Consulta de Alumno</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ path('app_reporte_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Seleccionar Alumno</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-8">
+                <label for="alumno_id" class="form-label">Alumno</label>
+                <select name="alumno_id" id="alumno_id" class="form-control" required>
+                    <option value="">Seleccione un alumno</option>
+                    {% for alumno in alumnos %}
+                        <option value="{{ alumno.id }}" {% if alumnoSeleccionado and alumno.id == alumnoSeleccionado.id %}selected{% endif %}>
+                            {{ alumno.apellidos }}, {{ alumno.nombres }} - {{ alumno.carrera.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary me-2">Consultar</button>
+                {% if alumnoSeleccionado %}
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="bi bi-download"></i> Exportar
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="{{ path('app_reporte_consulta_alumno', {'alumno_id': alumnoSeleccionado.id, 'formato': 'pdf'}) }}">
+                                    <i class="bi bi-file-pdf"></i> PDF
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ path('app_reporte_consulta_alumno', {'alumno_id': alumnoSeleccionado.id, 'formato': 'excel'}) }}">
+                                    <i class="bi bi-file-spreadsheet"></i> Excel
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if alumnoSeleccionado %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+            Información del Alumno
+            <span class="badge bg-primary ms-2">{{ notas|length }} cursos</span>
+        </h5>
+        <div>
+            <span class="text-muted">Generado: {{ "now"|date('d/m/Y H:i') }}</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Información Personal -->
+        <div class="row mb-4">
+            <div class="col-md-2 text-center">
+                {% if alumnoSeleccionado.fotografia %}
+                    <img src="{{ asset('uploads/fotos_alumnos/' ~ alumnoSeleccionado.fotografia) }}" 
+                         alt="Foto de {{ alumnoSeleccionado.nombreCompleto }}" 
+                         class="rounded-circle img-thumbnail" 
+                         width="120" 
+                         height="120">
+                {% else %}
+                    <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center mx-auto" 
+                         style="width: 120px; height: 120px;">
+                        <i class="bi bi-person text-white" style="font-size: 3rem;"></i>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-10">
+                <h4>{{ alumnoSeleccionado.nombreCompleto }}</h4>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <p><strong>Carrera:</strong> {{ alumnoSeleccionado.carrera.nombre }}</p>
+                        <p><strong>Fecha de Nacimiento:</strong> {{ alumnoSeleccionado.fechaNacimiento|date('d/m/Y') }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Edad:</strong> 
+                            {% if alumnoSeleccionado.fechaNacimiento %}
+                                {{ date().diff(date(alumnoSeleccionado.fechaNacimiento)).y }} años
+                            {% endif %}
+                        </p>
+                        <p><strong>ID:</strong> {{ alumnoSeleccionado.id }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historial de Notas -->
+        <h5 class="mb-3">Historial Académico</h5>
+        
+        {% if notas|length > 0 %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Semestre</th>
+                        <th>Curso</th>
+                        <th>Sección</th>
+                        <th>Nota</th>
+                        <th>Estado</th>
+                        <th>Fecha Registro</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for nota in notas %}
+                    <tr>
+                        <td>
+                            <strong>{{ nota.semestre.nombre }}</strong>
+                            <br>
+                            <small class="text-muted">
+                                {{ nota.semestre.fechaInicio|date('d/m/Y') }} - 
+                                {{ nota.semestre.fechaFin|date('d/m/Y') }}
+                            </small>
+                        </td>
+                        <td>{{ nota.curso.nombre }}</td>
+                        <td>{{ nota.seccion.nombre }}</td>
+                        <td>
+                            <span class="badge {% if nota.aprobado %}bg-success{% else %}bg-danger{% endif %} fs-6">
+                                {{ nota.calificacion }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if nota.aprobado %}
+                                <span class="badge bg-success">Aprobado</span>
+                            {% else %}
+                                <span class="badge bg-danger">Reprobado</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ nota.fechaRegistro|date('d/m/Y H:i') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ notas|length }}</h5>
+                        <p class="card-text">Total Cursos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ notas|filter(n => n.aprobado)|length }}</h5>
+                        <p class="card-text">Cursos Aprobados</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-danger text-white">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ notas|filter(n => not n.aprobado)|length }}</h5>
+                        <p class="card-text">Cursos Reprobados</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">
+                            {% set totalCursos = notas|length %}
+                            {% set cursosAprobados = notas|filter(n => n.aprobado)|length %}
+                            {% if totalCursos > 0 %}
+                                {{ ((cursosAprobados / totalCursos) * 100)|number_format(1) }}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </h5>
+                        <p class="card-text">Promedio Aprobación</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> El alumno no tiene notas registradas en el sistema.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

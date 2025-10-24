@@ -1,0 +1,6 @@
+<form method="post" action="{{ path('app_curso_carrera_semestre_delete', {'id': curso_carrera_semestre.id}) }}" onsubmit="return confirm('¿Está seguro que desea eliminar esta asignación?');" style="display: inline;">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ curso_carrera_semestre.id) }}">
+    <button type="submit" class="btn btn-sm btn-danger">
+        <i class="bi bi-trash"></i>
+    </button>
+</form>

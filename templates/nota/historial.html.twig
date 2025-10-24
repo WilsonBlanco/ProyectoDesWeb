@@ -1,0 +1,126 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Historial de Notas - Sistema Escolar{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Historial de Notas</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ path('app_nota_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Buscar Alumno</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-8">
+                <label for="alumno_id" class="form-label">Seleccionar Alumno</label>
+                <select name="alumno_id" id="alumno_id" class="form-control" required>
+                    <option value="">Seleccione un alumno</option>
+                    {% for inscripcion in notas %}
+                        {% if loop.first %}
+                            <option value="{{ inscripcion.alumno.id }}" {% if alumnoId == inscripcion.alumno.id %}selected{% endif %}>
+                                {{ inscripcion.alumno.apellidos }}, {{ inscripcion.alumno.nombres }} - {{ inscripcion.alumno.carrera.nombre }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary">Buscar Historial</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if notas|length > 0 and alumnoId %}
+    {% set alumno = notas[0].alumno %}
+    
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                Historial de Notas - {{ alumno.nombreCompleto }}
+                <span class="badge bg-primary ms-2">{{ alumno.carrera.nombre }}</span>
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if alumno.fotografia %}
+                <div class="text-center mb-4">
+                    <img src="{{ asset('uploads/fotos_alumnos/' ~ alumno.fotografia) }}" 
+                         alt="Foto de {{ alumno.nombreCompleto }}" 
+                         class="rounded-circle" 
+                         width="120" 
+                         height="120">
+                </div>
+            {% endif %}
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Semestre</th>
+                            <th>Curso</th>
+                            <th>Sección</th>
+                            <th>Nota</th>
+                            <th>Estado</th>
+                            <th>Fecha Registro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for inscripcion in notas %}
+                            <tr>
+                                <td>
+                                    <strong>{{ inscripcion.cursoSeccion.cursoCarreraSemestre.semestre.nombre }}</strong>
+                                    <br>
+                                    <small class="text-muted">
+                                        {{ inscripcion.cursoSeccion.cursoCarreraSemestre.semestre.fechaInicio|date('d/m/Y') }} - 
+                                        {{ inscripcion.cursoSeccion.cursoCarreraSemestre.semestre.fechaFin|date('d/m/Y') }}
+                                    </small>
+                                </td>
+                                <td>{{ inscripcion.cursoSeccion.cursoCarreraSemestre.curso.nombre }}</td>
+                                <td>{{ inscripcion.cursoSeccion.seccion.nombre }}</td>
+                                <td>
+                                    {% if inscripcion.nota is defined and inscripcion.nota %}
+                                        <span class="badge {% if inscripcion.nota.aprobado %}bg-success{% else %}bg-danger{% endif %} fs-6">
+                                            {{ inscripcion.nota.calificacion }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Sin nota</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if inscripcion.nota is defined and inscripcion.nota %}
+                                        {% if inscripcion.nota.aprobado %}
+                                            <span class="badge bg-success">Aprobado</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Reprobado</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="badge bg-warning">Pendiente</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if inscripcion.nota is defined and inscripcion.nota %}
+                                        {{ inscripcion.nota.fechaRegistro|date('d/m/Y H:i') }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% elseif alumnoId %}
+    <div class="alert alert-info mt-4">
+        <i class="bi bi-info-circle"></i> No se encontró historial de notas para el alumno seleccionado.
+    </div>
+{% endif %}
+{% endblock %}

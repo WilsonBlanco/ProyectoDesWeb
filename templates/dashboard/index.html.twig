@@ -1,0 +1,48 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Dashboard - Sistema Escolar{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Dashboard</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Alumnos</h5>
+                <p class="card-text">Gestión de estudiantes</p>
+                <a href="{{ path('app_alumno_index') }}" class="btn btn-light">Gestionar</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Carreras</h5>
+                <p class="card-text">Catálogo de bachilleratos</p>
+                <a href="{{ path('app_carrera_index') }}" class="btn btn-light">Gestionar</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Cursos</h5>
+                <p class="card-text">Catálogo de materias</p>
+                <a href="{{ path('app_curso_index') }}" class="btn btn-light">Gestionar</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Notas</h5>
+                <p class="card-text">Registro de calificaciones</p>
+                <a href="{{ path('app_nota_index') }}" class="btn btn-light">Gestionar</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

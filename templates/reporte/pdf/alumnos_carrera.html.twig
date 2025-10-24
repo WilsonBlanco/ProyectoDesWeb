@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Alumnos por Carrera</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #333;
+            font-size: 18px;
+        }
+        .header .subtitle {
+            margin: 5px 0;
+            color: #666;
+            font-size: 14px;
+        }
+        .info {
+            margin-bottom: 15px;
+        }
+        .info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .info td {
+            padding: 5px;
+            vertical-align: top;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: left;
+            font-weight: bold;
+        }
+        .table td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+        }
+        .table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        .badge-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .badge-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-right {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Sistema Escolar - Reporte de Alumnos</h1>
+        <div class="subtitle">Alumnos por Carrera</div>
+    </div>
+
+    <div class="info">
+        <table>
+            <tr>
+                <td><strong>Carrera:</strong> {{ carrera.nombre }}</td>
+                <td><strong>Total de Alumnos:</strong> {{ alumnos|length }}</td>
+            </tr>
+            <tr>
+                <td><strong>Fecha de Generación:</strong> {{ fecha|date('d/m/Y H:i') }}</td>
+                <td><strong>Página:</strong> <span id="page"></span>/<span id="topage"></span></td>
+            </tr>
+        </table>
+    </div>
+
+    {% if alumnos|length > 0 %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th width="5%">#</th>
+                <th width="25%">Nombres</th>
+                <th width="25%">Apellidos</th>
+                <th width="15%">Fecha Nacimiento</th>
+                <th width="10%">Edad</th>
+                <th width="20%">Carrera</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for alumno in alumnos %}
+            <tr>
+                <td class="text-center">{{ loop.index }}</td>
+                <td>{{ alumno.nombres }}</td>
+                <td>{{ alumno.apellidos }}</td>
+                <td>{{ alumno.fechaNacimiento ? alumno.fechaNacimiento|date('d/m/Y') : 'N/A' }}</td>
+                <td class="text-center">
+                    {% if alumno.fechaNacimiento %}
+                        {{ date().diff(date(alumno.fechaNacimiento)).y }} años
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>{{ alumno.carrera.nombre }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <p>Generado el {{ fecha|date('d/m/Y \\a \\l\\a\\s H:i') }} | Sistema Escolar</p>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 40px; color: #666;">
+        <h3>No se encontraron alumnos para la carrera seleccionada</h3>
+        <p>No hay alumnos inscritos en la carrera "{{ carrera.nombre }}"</p>
+    </div>
+    {% endif %}
+
+    <script type="text/php">
+        if (isset($pdf)) {
+            $text = "Página {PAGE_NUM} de {PAGE_COUNT}";
+            $size = 10;
+            $font = $fontMetrics->getFont("Arial");
+            $width = $fontMetrics->get_text_width($text, $font, $size) / 2;
+            $x = ($pdf->get_width() - $width) / 2;
+            $y = $pdf->get_height() - 35;
+            $pdf->page_text($x, $y, $text, $font, $size);
+        }
+    </script>
+</body>
+</html>

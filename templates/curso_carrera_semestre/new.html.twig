@@ -1,0 +1,42 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Nueva Asignación - Sistema Escolar{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Nueva Asignación de Curso a Carrera y Semestre</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ path('app_curso_carrera_semestre_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {{ form_start(form) }}
+        <div class="row">
+            <div class="col-md-4">
+                <div class="mb-3">
+                    {{ form_label(form.carrera) }}
+                    {{ form_widget(form.carrera) }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    {{ form_label(form.semestre) }}
+                    {{ form_widget(form.semestre) }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    {{ form_label(form.curso) }}
+                    {{ form_widget(form.curso) }}
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar Asignación</button>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

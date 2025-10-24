@@ -1,0 +1,37 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Seccion index{% endblock %}
+
+{% block body %}
+    <h1>Seccion index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for seccion in seccions %}
+            <tr>
+                <td>{{ seccion.id }}</td>
+                <td>{{ seccion.nombre }}</td>
+                <td>{{ seccion.descripcion }}</td>
+                <td>
+                    <a href="{{ path('app_seccion_show', {'id': seccion.id}) }}">show</a>
+                    <a href="{{ path('app_seccion_edit', {'id': seccion.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_seccion_new') }}">Create new</a>
+{% endblock %}

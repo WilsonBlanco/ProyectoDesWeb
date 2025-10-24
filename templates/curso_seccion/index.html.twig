@@ -1,0 +1,60 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}Secciones Habilitadas - Sistema Escolar{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Secciones Habilitadas para Cursos</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="{{ path('app_curso_seccion_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Habilitar Nueva Sección
+        </a>
+    </div>
+</div>
+
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Curso</th>
+                <th>Carrera</th>
+                <th>Semestre</th>
+                <th>Sección</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for curso_seccion in curso_seccions %}
+            <tr>
+                <td>{{ curso_seccion.id }}</td>
+                <td>{{ curso_seccion.cursoCarreraSemestre.curso.nombre }}</td>
+                <td>{{ curso_seccion.cursoCarreraSemestre.carrera.nombre }}</td>
+                <td>{{ curso_seccion.cursoCarreraSemestre.semestre.nombre }}</td>
+                <td>{{ curso_seccion.seccion.nombre }}</td>
+                <td class="table-actions">
+                    <a href="{{ path('app_curso_seccion_show', {'id': curso_seccion.id}) }}" class="btn btn-sm btn-info">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{{ path('app_curso_seccion_edit', {'id': curso_seccion.id}) }}" class="btn btn-sm btn-warning">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    {{ include('curso_seccion/_delete_form.html.twig') }}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6" class="text-center">No se encontraron secciones habilitadas</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
